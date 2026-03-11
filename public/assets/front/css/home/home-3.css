@@ -1,0 +1,12 @@
+/* -----------------------------------------
+	Hero Banner 3 CSS
+----------------------------------------- */
+.hero-banner_v3 {
+  padding-top: 100px;
+}
+.hero-banner_v3 .banner-img {
+  margin-top: -170px;
+}
+.hero-banner_v3 .banner-img > img {
+  filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.1));
+}

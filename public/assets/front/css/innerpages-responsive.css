@@ -1,0 +1,89 @@
+
+@media only screen and (min-width: 992px) and (max-width : 1199.98px) {
+    .gigs-sidebar .widget.widget-price-range span.amount {
+        margin-inline-end: 1px;
+    }
+
+    .gigs-sidebar .widget.widget-price-range input {
+        font-size: 12px;
+    }
+
+    .gigs-sidebar .packages-widgets .packages-tabs .nav-tabs .nav-link {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+}
+@media only screen and (max-width : 1199.98px) {
+  .breadcrumbs-area{
+    padding-top: 100px;
+  }
+  .categories-menu {
+    border: unset;
+    background-color: var(--bg-white);
+}
+}
+@media only screen and (max-width : 767.98px) {
+    .about-area-v1 .about-img-box .about-img-one .shape-box {
+        display: none;
+    }
+
+    .gig-details-section .discription-wrap .nav-tabs .nav-link {
+        font-size: 14px;
+        padding-inline-end: 10px;
+    }
+
+    .gigs-sidebar .packages-widgets .packages-tabs .nav-tabs .nav-link {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+
+    .gig-details-section .gig-details-wrapper .gig-slider-wrap .gigs-big-slider .single-item .item-content h4 {
+        font-size: 18px;
+        line-height: 28px;
+    }
+
+    .slick-current div:first-child .testimonial-three-item {
+        display: inline-block !important;
+    }
+
+    .contact-area-v2 .contact-wrapper {
+        padding: 30px;
+    }
+}
+@media only screen and (min-width : 575px) and (max-width : 767.98px) {
+    .about-area-v1 .about-img-box {
+        padding-bottom: 70px;
+    }
+
+    .about-area-v1 .about-img-box .about-img-two {
+        position: absolute;
+    }
+}
+@media only screen and (max-width: 450px) {
+    .gig-details-section .gig-details-wrapper .gig-slider-wrap .gigs-big-slider .single-item .item-content h4 {
+        font-size: 14px;
+        line-height: 22px;
+        font-weight: 400;
+    }
+
+    .gig-details-section .discription-wrap .gigs-review-area .review_user {
+        padding-inline-start: 0px;
+    }
+
+    .gig-details-section .discription-wrap .gigs-review-area .review_user img {
+        position: relative;
+        top: auto;
+        left: auto;
+        margin-bottom: 20px;
+    }
+}
+@media only screen and (min-width: 451px) and (max-width : 767.98px) {
+    .gig-details-section .discription-wrap .nav-tabs .nav-link {
+        font-size: 16px;
+        padding-inline-end: 15px;
+    }
+
+    .gigs-sidebar .packages-widgets .packages-tabs .nav-tabs .nav-link {
+        padding: 10px 35px;
+    }
+}

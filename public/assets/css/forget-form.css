@@ -1,0 +1,15 @@
+
+.forget-page {
+  max-width: 600px;
+  margin: auto;
+  padding: 10% 0 0;
+}
+
+.form {
+  max-width: 600px;
+}
+
+.form button {
+  width: 20%;
+  padding: 12px;
+}

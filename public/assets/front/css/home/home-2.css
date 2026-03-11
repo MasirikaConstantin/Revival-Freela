@@ -1,0 +1,17 @@
+/* -----------------------------------------
+	Hero Banner 2 CSS
+----------------------------------------- */
+.hero-banner_v2 .banner-content {
+  padding: 60px 0 60px;
+}
+.hero-banner_v2 .right-content {
+  position: relative;
+}
+.hero-banner_v2 .right-content img {
+  max-width: 100%;
+  border-start-start-radius: var(--radius-xl);
+  border-end-start-radius: var(--radius-xl);
+}
+.hero-banner_v2 .banner-img > img {
+  filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.1));
+}

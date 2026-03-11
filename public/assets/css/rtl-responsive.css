@@ -1,0 +1,75 @@
+/*Large Device*/
+@media only screen and (min-width: 1200px) and (max-width : 1400px) {}
+
+/*Large Device*/
+@media only screen and (min-width: 992px) and (max-width : 1199px) {
+  .features-area-v1 .features-item .icon {
+    margin-right: 0px;
+    margin-left: 20px;
+  }
+
+  .blog-area-v1 .blog-post-item .entry-content .post-meta ul li {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .footer-area-v1 .footer-widget .widget.about-widget .social-link li {
+    margin-right: 0px;
+    margin-left: 5px;
+  }
+
+  .gigs-sidebar .widget.widget-price-range span.amount {
+    margin-right: 0px;
+    margin-left: 1px;
+  }
+
+  .banner-area-v1 .banner-content p {
+    padding-right: 0px;
+    padding-left: 0;
+  }
+}
+
+/*Medium Device*/
+@media only screen and (min-width: 768px) and (max-width : 991px) {
+  .banner-area-v1 .banner-content p {
+    padding-right: 0px;
+    padding-left: 0;
+  }
+}
+
+/* Small Devices, Tablets */
+@media only screen and (max-width : 991px) {
+  .features-area-v1 .features-item .icon {
+    margin-right: 0px;
+    margin-left: 20px;
+  }
+
+  .banner-area-v1 .banner-content p {
+    padding-right: 0px;
+    padding-left: 0;
+  }
+}
+
+/* Small Devices*/
+@media only screen and (max-width : 767px) {
+  .header-navigation .nav-tools ul li .icon {
+    margin-left: 0px;
+    margin-right: 6px;
+  }
+}
+
+/* Mobile Devices*/
+@media only screen and (max-width: 450px) {
+  .gig-details-section .discription-wrap .gigs-review-area .review_user {
+    padding-left: 0px;
+    padding-right: 0;
+  }
+}
+
+/* Wide mobile Devices */
+@media only screen and (min-width: 451px) and (max-width : 767px) {
+  .gig-details-section .discription-wrap .nav-tabs .nav-link {
+    padding-right: 0px;
+    padding-left: 15px;
+  }
+}

@@ -1,0 +1,10 @@
+/* -----------------------------------------
+	Hero Banner 1 CSS
+----------------------------------------- */
+.hero-banner_v1 {
+  padding: 60px 0 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+.hero-banner_v1 .banner-img > img {
+  filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.1));
+}

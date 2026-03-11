@@ -1,0 +1,51 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('fonts/icomoon.eot?kiuo0t');
+  src:  url('fonts/icomoon.eot?kiuo0t#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?kiuo0t') format('truetype'),
+    url('fonts/icomoon.woff?kiuo0t') format('woff'),
+    url('fonts/icomoon.svg?kiuo0t#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="ico-"], [class*=" ico-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ico-video:before {
+  content: "\e900";
+}
+.ico-note:before {
+  content: "\e901";
+}
+.ico-bar:before {
+  content: "\e902";
+}
+.ico-scale:before {
+  content: "\e903";
+}
+.ico-code:before {
+  content: "\e904";
+}
+.ico-web:before {
+  content: "\e905";
+}
+.ico-tools:before {
+  content: "\e906";
+}
+.ico-marketing:before {
+  content: "\e907";
+}

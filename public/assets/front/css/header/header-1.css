@@ -1,0 +1,6 @@
+/* -----------------------------------------
+	Header 1 CSS
+----------------------------------------- */
+.header_v1:not(.is-sticky) {
+  background-color: transparent;
+}

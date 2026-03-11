@@ -1,0 +1,120 @@
+#search-modal .modal-content .search_btn {
+  right: unset;
+  left: 10px;
+}
+
+.about-area-v1 .about-content-box ul.list-box li:before,
+.header-navigation .main-menu ul li .sub-menu {
+  left: auto;
+  right: 0;
+}
+
+.about-area-v1 .about-img-box .about-img-two {
+  right: auto;
+  left: 0;
+}
+
+.about-area-v1 .about-img-box .about-img-one .shape-box .shape {
+  left: auto;
+  right: -50px;
+}
+
+.seller-area .seller-search .form-group i,
+.service-gig-area .gig-search .form-group i {
+  left: 20px;
+  right: auto;
+}
+
+.service-gig-area .gigs-sidebar .widget h4.widget-title:before {
+  left: auto;
+  right: 0px;
+}
+
+.service-gig-area .gigs-sidebar .widget h4.widget-title:after {
+  left: auto;
+  right: 30px;
+}
+
+.gigs-sidebar .widget.widget-price-range span.amount {
+  float: right;
+}
+
+.gig-details-section .discription-wrap .gigs-review-area .review_user img {
+  left: auto;
+  right: 0;
+}
+
+.gigs-sidebar .packages-widgets .packges-content-wrap .packages-content h3 span.price {
+  float: left;
+}
+
+.gigs-sidebar .packages-widgets .packges-content-wrap .packages-content ul.features li.check-icon:before {
+  left: auto;
+  right: 0;
+}
+
+.sidebar-widget-area .widget.search-widget .search-btn {
+  right: auto;
+  left: 0;
+}
+
+.sidebar-widget-area .widget.search-widget {
+  border-left: none;
+  border-right: 3px solid #FF5F00;
+}
+
+.sidebar-widget-area .widget.categories-widget ul.widget-link li a span {
+  float: left;
+}
+
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_length,
+.user-dashbord .main-info ul.list {
+  float: right;
+}
+
+.dataTables_wrapper .dataTables_filter {
+  float: left;
+  text-align: left;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+  float: left;
+}
+
+.contact-area,
+.contact-informatoin,
+.blog-details-section,
+.user-dashbord,
+.user-area-section,
+.gig-details-section,
+.breadcrumbs-area,
+.about-area-v1 {
+  text-align: right;
+}
+
+@media (max-width: 1199.98px) {
+  .widget-offcanvas {
+    transform: translateX(100%);
+    left: unset;
+    right: 0;
+  }
+}
+
+.file-upload-area {
+  margin-right: 30px;
+}
+
+div.dataTables_wrapper div.dataTables_filter input {
+  margin-left: unset;
+  margin-right: .5em;
+}
+
+div.table-responsive>div.dataTables_wrapper>div.row>div[class^=col-]:first-child {
+  padding-left: 15px;
+  padding-right: 0;
+}
+
+.custom-select {
+  background-position-x: 0.75rem !important;
+}
