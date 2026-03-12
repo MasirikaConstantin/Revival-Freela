@@ -15,6 +15,7 @@ use App\Http\Controllers\FrontEnd\PaymentGateway\PaystackController;
 use App\Http\Controllers\FrontEnd\PaymentGateway\PaytmController;
 use App\Http\Controllers\FrontEnd\PaymentGateway\RazorpayController;
 use App\Http\Controllers\FrontEnd\PaymentGateway\StripeController;
+use App\Http\Controllers\FrontEnd\PaymentGateway\FreshpayController;
 use App\Http\Helpers\BasicMailer;
 use App\Models\BasicSettings\Basic;
 use App\Models\BasicSettings\MailTemplate;
@@ -88,6 +89,11 @@ class PayController extends Controller
         'expiry_month' => 'required',
         'expiry_year' => 'required'
       ]);
+    } elseif ($request->gateway == 'freshpay') {
+      $request->validate([
+        'customer_number' => 'required',
+        'method' => 'required|in:airtel,orange,mpesa'
+      ]);
     }
 
     $invoiceId = Session::get('invoice_id');
@@ -141,6 +147,10 @@ class PayController extends Controller
       $authorizenet = new AuthorizeNetController();
 
       return $authorizenet->index($request, $allData, 'invoice');
+    } else if ($request['gateway'] == 'freshpay') {
+      $freshpay = new FreshpayController();
+
+      return $freshpay->index($request, $allData, 'invoice');
     } else {
       $offline = new OfflineController();
 

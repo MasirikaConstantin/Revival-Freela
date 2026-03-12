@@ -407,6 +407,27 @@
                   </div>
                 </div>
 
+                <div class="freshpay-element {{ old('gateway') == 'freshpay' ? '' : 'd-none' }}">
+                  <div class="form-group mb-30">
+                    <input type="text" name="customer_number" value="{{ old('customer_number') }}"
+                      class="form-control freshpay-field" placeholder="Customer Number">
+                    @error('customer_number')
+                      <p class="text-danger">{{ $message }}</p>
+                    @enderror
+                  </div>
+                  <div class="form-group mb-30">
+                    <select name="method" class="form-control freshpay-field">
+                      <option value="" disabled @selected(empty(old('method')))>{{ __('Select Method') }}</option>
+                      <option value="airtel" @selected(old('method') == 'airtel')>airtel</option>
+                      <option value="orange" @selected(old('method') == 'orange')>orange</option>
+                      <option value="mpesa" @selected(old('method') == 'mpesa')>mpesa</option>
+                    </select>
+                    @error('method')
+                      <p class="text-danger">{{ $message }}</p>
+                    @enderror
+                  </div>
+                </div>
+
                 <!-----------stripe------------->
                 <div id="stripe-element" class="mb-2 mt-2">
                   <!-- A Stripe Element will be inserted here. -->

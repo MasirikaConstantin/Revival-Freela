@@ -404,13 +404,22 @@ $(document).ready(function () {
       // show or hide 'stripe' form
       if (value == 'stripe') {
         $('#stripe-element').removeClass('d-none');
-        $('.iyzico-element').addClass('d-none');
-      } if (value == 'iyzico') {
-        $('.iyzico-element').removeClass('d-none');
-        $('#stripe-element').addClass('d-none');
       } else {
         $('#stripe-element').addClass('d-none');
+      }
+
+      if (value == 'iyzico') {
+        $('.iyzico-element').removeClass('d-none');
+      } else {
         $('.iyzico-element').addClass('d-none');
+      }
+
+      if (value == 'freshpay') {
+        $('.freshpay-element').removeClass('d-none');
+        $('.freshpay-field').removeAttr('disabled');
+      } else {
+        $('.freshpay-element').addClass('d-none');
+        $('.freshpay-field').attr('disabled', true);
       }
 
       // show or hide 'authorize.net' form
@@ -430,6 +439,8 @@ $(document).ready(function () {
       if (!$('.iyzico-element').hasClass('d-none')) {
         $('.iyzico-element').addClass('d-none');
       }
+      $('.freshpay-element').addClass('d-none');
+      $('.freshpay-field').attr('disabled', true);
 
 
       $('#authorizenet-form').hide();
@@ -452,6 +463,8 @@ $(document).ready(function () {
       prevGatewayId = value;
     }
   });
+
+  $('select[name="gateway"]').trigger('change');
 
   $('#payment-form-btn').on('click', function (e) {
     e.preventDefault();

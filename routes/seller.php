@@ -208,6 +208,9 @@ Route::prefix('seller')->middleware('auth:seller', 'EmailStatus:seller', 'Deacti
     Route::get('/xendit/success', 'Payment\XenditController@successPayment')->name('membership.xendit.success');
     Route::get('xendit/cancel', 'Payment\XenditController@cancelPayment')->name('membership.xendit.cancel');
 
+    Route::match(['get', 'post'], '/freshpay/success', 'Payment\FreshpayController@successPayment')->name('membership.freshpay.success');
+    Route::get('freshpay/cancel', 'Payment\FreshpayController@cancelPayment')->name('membership.freshpay.cancel');
+
     Route::get('/offline/success', 'Front\CheckoutController@offlineSuccess')->name('membership.offline.success');
     Route::get('/trial/success', 'Front\CheckoutController@trialSuccess')->name('membership.trial.success');
 

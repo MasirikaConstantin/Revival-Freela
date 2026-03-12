@@ -172,7 +172,8 @@
 
                     @if (count($onlineGateways) > 0)
                       @foreach ($onlineGateways as $onlineGateway)
-                        <option value="{{ $onlineGateway->keyword }}" data-gateway_type="online">
+                        <option value="{{ $onlineGateway->keyword }}"
+                          {{ old('gateway') == $onlineGateway->keyword ? 'selected' : '' }} data-gateway_type="online">
                           {{ __($onlineGateway->name) }}
                         </option>
                       @endforeach
@@ -180,7 +181,8 @@
 
                     @if (count($offlineGateways) > 0)
                       @foreach ($offlineGateways as $offlineGateway)
-                        <option value="{{ $offlineGateway->id }}" data-gateway_type="offline"
+                        <option value="{{ $offlineGateway->id }}"
+                          {{ old('gateway') == $offlineGateway->id ? 'selected' : '' }} data-gateway_type="offline"
                           data-has_attachment="{{ $offlineGateway->has_attachment }}">
                           {{ __($offlineGateway->name) }}
                         </option>
@@ -196,6 +198,31 @@
                 </button>
               </div>
 
+            </div>
+
+            <div class="row freshpay-element {{ old('gateway') == 'freshpay' ? '' : 'd-none' }}">
+              <div class="col-12">
+                <div class="form-group mb-3">
+                  <label>{{ __('Customer Number') . '*' }}</label>
+                  <input type="text" class="form-control freshpay-field" name="customer_number"
+                    value="{{ old('customer_number') }}" placeholder="Enter Customer Number">
+                  @error('customer_number')
+                    <p class="mt-1 text-danger">{{ $message }}</p>
+                  @enderror
+                </div>
+                <div class="form-group mb-3">
+                  <label>{{ __('Method') . '*' }}</label>
+                  <select name="method" class="form-control freshpay-field">
+                    <option value="" disabled @selected(empty(old('method')))>{{ __('Select Method') }}</option>
+                    <option value="airtel" @selected(old('method') == 'airtel')>airtel</option>
+                    <option value="orange" @selected(old('method') == 'orange')>orange</option>
+                    <option value="mpesa" @selected(old('method') == 'mpesa')>mpesa</option>
+                  </select>
+                  @error('method')
+                    <p class="mt-1 text-danger">{{ $message }}</p>
+                  @enderror
+                </div>
+              </div>
             </div>
 
             <div style="@if (

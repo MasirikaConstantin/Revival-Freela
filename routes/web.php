@@ -77,6 +77,7 @@ Route::middleware('change.lang')->group(function () {
 
       Route::post('/iyzico/notify', 'FrontEnd\PaymentGateway\IyzicoController@notify')->name('service.place_order.iyzico.notify');
       Route::get('/xendit/notify', 'FrontEnd\PaymentGateway\XenditController@notify')->name('service.place_order.xendit.notify');
+      Route::match(['get', 'post'], '/freshpay/notify', 'FrontEnd\PaymentGateway\FreshpayController@notify')->name('service.place_order.freshpay.notify');
 
       Route::get('/complete', 'FrontEnd\ClientService\OrderProcessController@complete')->name('service.place_order.complete');
 
@@ -106,6 +107,7 @@ Route::middleware('change.lang')->group(function () {
     Route::get('/mollie/notify', 'FrontEnd\PaymentGateway\MollieController@notify')->name('pay.mollie.notify');
 
     Route::post('/paytm/notify', 'FrontEnd\PaymentGateway\PaytmController@notify')->name('pay.paytm.notify');
+    Route::match(['get', 'post'], '/freshpay/notify', 'FrontEnd\PaymentGateway\FreshpayController@notify')->name('pay.freshpay.notify');
 
     Route::get('/complete', 'FrontEnd\PayController@complete')->name('pay.complete');
 

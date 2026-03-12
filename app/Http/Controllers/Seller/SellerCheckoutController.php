@@ -22,6 +22,7 @@ use App\Http\Controllers\Payment\IyzicoController;
 use App\Http\Controllers\Payment\MyFatoorahController;
 use App\Http\Controllers\Payment\MidtransController;
 use App\Http\Controllers\Payment\XenditController;
+use App\Http\Controllers\Payment\FreshpayController;
 use App\Http\Helpers\BasicMailer;
 use App\Http\Helpers\SellerPermissionHelper;
 use App\Http\Requests\Checkout\ExtendRequest;
@@ -297,6 +298,12 @@ class SellerCheckoutController extends Controller
                 $success_url = route('membership.xendit.success');
                 $cancel_url = route('membership.xendit.cancel');
                 $payment = new XenditController();
+                return $payment->paymentProcess($request, $amount, $success_url, $cancel_url, $title, $bs);
+            } elseif ($request->payment_method == 'Freshpay') {
+                $amount = $request->price;
+                $success_url = route('membership.freshpay.success');
+                $cancel_url = route('membership.freshpay.cancel');
+                $payment = new FreshpayController();
                 return $payment->paymentProcess($request, $amount, $success_url, $cancel_url, $title, $bs);
             } elseif (in_array($request->payment_method, $offline_payment_gateways)) {
                 $request['status'] = "0";

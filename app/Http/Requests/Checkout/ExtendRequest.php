@@ -31,7 +31,9 @@ class ExtendRequest extends FormRequest
             'payment_method' => $this->price != 0 ? 'required' : '',
             'receipt' => $this->is_receipt == 1 ? 'required | mimes:jpeg,jpg,png' : '',
             'stripeToken' => $this->payment_method == 'Stripe' ? 'required' : '',
-            'identity_number' => $this->payment_method == 'Iyzico' ? 'required' : ''
+            'identity_number' => $this->payment_method == 'Iyzico' ? 'required' : '',
+            'customer_number' => $this->payment_method == 'Freshpay' ? 'required' : '',
+            'method' => $this->payment_method == 'Freshpay' ? 'required|in:airtel,orange,mpesa' : ''
         ];
     }
 

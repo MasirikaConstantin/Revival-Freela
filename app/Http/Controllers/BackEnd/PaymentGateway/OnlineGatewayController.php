@@ -32,6 +32,7 @@ class OnlineGatewayController extends Controller
     $gatewayInfo['myfatoorah'] = OnlineGateway::where('keyword', 'myfatoorah')->first();
     $gatewayInfo['xendit'] = OnlineGateway::where('keyword', 'xendit')->first();
     $gatewayInfo['perfect_money'] = OnlineGateway::where('keyword', 'perfect_money')->first();
+    $gatewayInfo['freshpay'] = OnlineGateway::where('keyword', 'freshpay')->first();
 
     return view('backend.payment-gateways.online-gateways', $gatewayInfo);
   }
@@ -701,6 +702,61 @@ class OnlineGatewayController extends Controller
     ]);
 
     Session::flash('success', "Updated Perfect Money's Information Successfully");
+
+    return redirect()->back();
+  }
+
+  public function updateFreshpayInfo(Request $request)
+  {
+    $rules = [
+      'freshpay_status' => 'required',
+      'freshpay_merchant_id' => 'required',
+      'freshpay_merchant_secrete' => 'required',
+      'freshpay_firstname' => 'required',
+      'freshpay_lastname' => 'required',
+      'freshpay_email' => 'required|email'
+    ];
+
+    $messages = [
+      'freshpay_status.required' => 'The status field is required.',
+      'freshpay_merchant_id.required' => 'The merchant id field is required.',
+      'freshpay_merchant_secrete.required' => 'The merchant secrete field is required.',
+      'freshpay_firstname.required' => 'The firstname field is required.',
+      'freshpay_lastname.required' => 'The lastname field is required.',
+      'freshpay_email.required' => 'The email field is required.',
+      'freshpay_email.email' => 'The email must be a valid email address.'
+    ];
+
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    if ($validator->fails()) {
+      return redirect()->back()->withErrors($validator->errors());
+    }
+
+    $information = [
+      'merchant_id' => $request->freshpay_merchant_id,
+      'merchant_secrete' => $request->freshpay_merchant_secrete,
+      'firstname' => $request->freshpay_firstname,
+      'lastname' => $request->freshpay_lastname,
+      'email' => $request->freshpay_email
+    ];
+
+    $data = OnlineGateway::firstOrCreate(
+      ['keyword' => 'freshpay'],
+      [
+        'name' => 'Freshpay',
+        'information' => json_encode($information),
+        'status' => 0
+      ]
+    );
+
+    $data->update([
+      'name' => 'Freshpay',
+      'information' => json_encode($information),
+      'status' => $request->freshpay_status
+    ]);
+
+    Session::flash('success', "Updated Freshpay's Information Successfully");
 
     return redirect()->back();
   }

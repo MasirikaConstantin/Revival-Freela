@@ -39,6 +39,8 @@ class OrderProcessRequest extends FormRequest
       'country' => $this->gateway == 'iyzico' ? 'required' : '',
       'address' => $this->gateway == 'iyzico' ? 'required' : '',
       'zip_code' => $this->gateway == 'iyzico' ? 'required' : '',
+      'customer_number' => $this->gateway == 'freshpay' ? 'required' : '',
+      'method' => $this->gateway == 'freshpay' ? 'required|in:airtel,orange,mpesa' : '',
     ];
 
     foreach ($inputFields as $inputField) {

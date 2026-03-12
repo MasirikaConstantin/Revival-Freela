@@ -379,6 +379,7 @@ Route::prefix('/admin')->middleware('auth:admin', 'Demo')->group(function () {
 
     Route::post('/update-zendit-info', 'BackEnd\PaymentGateway\OnlineGatewayController@updateXenditInfo')->name('admin.payment_gateways.update_xendit_info');
     Route::post('/update-perfect_money-info', 'BackEnd\PaymentGateway\OnlineGatewayController@updatePerfectMoneyInfo')->name('admin.payment_gateways.update_perfect_money_info');
+    Route::post('/update-freshpay-info', 'BackEnd\PaymentGateway\OnlineGatewayController@updateFreshpayInfo')->name('admin.payment_gateways.update_freshpay_info');
 
     Route::get('/offline-gateways', 'BackEnd\PaymentGateway\OfflineGatewayController@index')->name('admin.payment_gateways.offline_gateways');
 

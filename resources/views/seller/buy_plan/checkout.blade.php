@@ -123,6 +123,27 @@
                   <p class="text-danger text-left">{{ $message }}</p>
                 @enderror
               </div>
+
+              <div class="freshpay-element {{ old('payment_method') == 'Freshpay' ? '' : 'd-none' }}">
+                <div class="form-group mt-2">
+                  <input type="text" name="customer_number" class="form-control"
+                    value="{{ old('customer_number') }}" placeholder="Customer Number">
+                  @error('customer_number')
+                    <p class="text-danger text-left">{{ $message }}</p>
+                  @enderror
+                </div>
+                <div class="form-group">
+                  <select name="method" class="form-control">
+                    <option value="" disabled @selected(empty(old('method')))>{{ __('Select Method') }}</option>
+                    <option value="airtel" @selected(old('method') == 'airtel')>airtel</option>
+                    <option value="orange" @selected(old('method') == 'orange')>orange</option>
+                    <option value="mpesa" @selected(old('method') == 'mpesa')>mpesa</option>
+                  </select>
+                  @error('method')
+                    <p class="text-danger text-left">{{ $message }}</p>
+                  @enderror
+                </div>
+              </div>
               <div id="stripe-element">
                 <!-- A Stripe Element will be inserted here. -->
               </div>
@@ -189,12 +210,20 @@
         // show or hide stripe card inputs
         if (paymentMethod == 'Stripe') {
           $('#stripe-element').removeClass('d-none');
+        } else {
+          $('#stripe-element').addClass('d-none');
         }
+
         if (paymentMethod == 'Iyzico') {
           $('.iyzico-element').removeClass('d-none');
         } else {
-          $('#stripe-element').addClass('d-none');
           $('.iyzico-element').addClass('d-none');
+        }
+
+        if (paymentMethod == 'Freshpay') {
+          $('.freshpay-element').removeClass('d-none');
+        } else {
+          $('.freshpay-element').addClass('d-none');
         }
 
         if (paymentMethod == 'Authorize.Net') {

@@ -24,6 +24,7 @@ use App\Http\Controllers\FrontEnd\PaymentGateway\IyzicoController;
 use App\Http\Controllers\FrontEnd\PaymentGateway\MyFatoorahController;
 use App\Http\Controllers\FrontEnd\PaymentGateway\MidtransController;
 use App\Http\Controllers\FrontEnd\PaymentGateway\XenditController;
+use App\Http\Controllers\FrontEnd\PaymentGateway\FreshpayController;
 use App\Http\Helpers\BasicMailer;
 use App\Http\Helpers\SellerPermissionHelper;
 use App\Http\Helpers\UploadFile;
@@ -241,6 +242,10 @@ class OrderProcessController extends Controller
         $xendit = new XenditController();
 
         return $xendit->index($request, $allData, 'service');
+      } else if ($request['gateway'] == 'freshpay') {
+        $freshpay = new FreshpayController();
+
+        return $freshpay->index($request, $allData, 'service');
       } else {
         $offline = new OfflineController();
 
