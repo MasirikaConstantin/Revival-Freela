@@ -31,5 +31,8 @@ class VerifyCsrfToken extends Middleware
     '*/paytabs/notify',
     '*/iyzico/success',
     '*/iyzico/notify',
+    '*/freshpay/success',
+    '*/freshpay/notify',
+    '/freshpay/membership/callback',
   ];
 }

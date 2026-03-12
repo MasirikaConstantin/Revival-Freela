@@ -18,6 +18,7 @@ Route::post('/push-notification/store-endpoint', 'FrontEnd\PushNotificationContr
 // cron job for sending expiry mail
 Route::get('/subcheck', 'CronJobController@expired')->name('cron.expired');
 Route::get('/check-payment', 'CronJobController@check_payment')->name('cron.check_payment');
+Route::match(['get', 'post'], '/freshpay/membership/callback', 'Payment\FreshpayController@callback')->name('freshpay.membership.callback');
 
 Route::get('myfatoorah/callback', 'MyFatoorahController@callback')->name('myfatoorah_callback');
 

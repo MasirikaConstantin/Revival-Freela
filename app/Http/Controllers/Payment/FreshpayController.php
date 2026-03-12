@@ -12,6 +12,7 @@ use App\Models\Package;
 use App\Models\PaymentGateway\OnlineGateway;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 
@@ -30,7 +31,7 @@ class FreshpayController extends Controller
         ) {
             Session::flash('warning', 'Freshpay is not configured yet. Please contact admin.');
 
-            return redirect($_cancel_url);
+            return redirect($_cancel_url)->withInput($request->all());
         }
 
         $paymentFor = Session::get('paymentFor', 'extend');
@@ -48,7 +49,7 @@ class FreshpayController extends Controller
             'email' => $gatewayInfo['email'],
             'reference' => $reference,
             'method' => $request->input('method'),
-            'callback_url' => $_success_url
+            'callback_url' => route('freshpay.membership.callback')
         ];
 
         $response = Http::acceptJson()->timeout(30)->post($this->apiUrl, $payload);
@@ -62,44 +63,153 @@ class FreshpayController extends Controller
         }
 
         Session::put('request', $request->all());
+        Session::put('paymentFor', $paymentFor);
         Session::put('cancel_url', $_cancel_url);
         Session::put('freshpay_reference', $reference);
+
+        Cache::put($this->pendingKey($reference), [
+            'payment_for' => $paymentFor,
+            'request_data' => $request->all(),
+            'cancel_url' => $_cancel_url
+        ], now()->addHours(6));
 
         $redirectUrl = $this->extractRedirectUrl($responseData);
         if (!empty($redirectUrl)) {
             return redirect()->away($redirectUrl);
         }
 
-        return redirect()->to($_success_url . '?reference=' . $reference);
+        Session::flash('success', 'Freshpay push sent. Please approve the payment on your phone and wait for confirmation.');
+
+        return redirect()->back()->withInput($request->all());
     }
 
+    /**
+     * Public callback endpoint for Freshpay server notifications.
+     */
+    public function callback(Request $request)
+    {
+        $payload = $request->all();
+        $reference = $this->extractReference($payload);
+
+        if (empty($reference)) {
+            return response()->json(['message' => 'Reference not found.'], 200);
+        }
+
+        if ($this->hasExplicitFailure($payload)) {
+            Cache::forget($this->pendingKey($reference));
+            Cache::forget($this->processedKey($reference));
+
+            return response()->json(['message' => 'Payment failed.'], 200);
+        }
+
+        if (!$this->isConfirmedSuccess($payload)) {
+            return response()->json(['message' => 'Payment pending confirmation.'], 200);
+        }
+
+        if (Cache::has($this->processedKey($reference))) {
+            return response()->json(['message' => 'Payment already processed.'], 200);
+        }
+
+        $pending = Cache::get($this->pendingKey($reference));
+        if (empty($pending) || empty($pending['request_data'])) {
+            return response()->json(['message' => 'Payment context not found.'], 200);
+        }
+
+        $this->processMembershipPayment(
+            $pending['request_data'],
+            $pending['payment_for'] ?? 'extend',
+            $reference,
+            $payload
+        );
+
+        Cache::put($this->processedKey($reference), true, now()->addDay());
+        Cache::forget($this->pendingKey($reference));
+
+        return response()->json(['message' => 'Payment confirmed and processed.'], 200);
+    }
+
+    /**
+     * Route used when Freshpay redirects the seller browser back.
+     */
     public function successPayment(Request $request)
     {
-        $requestData = Session::get('request');
-        $bs = Basic::first();
-        $cancel_url = Session::get('cancel_url');
-        $reference = Session::get('freshpay_reference');
+        $payload = $request->all();
 
-        if (empty($requestData)) {
+        $reference = $this->extractReference($payload);
+        if (empty($reference)) {
+            $reference = Session::get('freshpay_reference');
+        }
+
+        $requestData = Session::get('request');
+        $paymentFor = Session::get('paymentFor');
+        $cancel_url = Session::get('cancel_url');
+
+        $pending = !empty($reference) ? Cache::get($this->pendingKey($reference)) : null;
+        if (empty($requestData) && !empty($pending['request_data'])) {
+            $requestData = $pending['request_data'];
+        }
+        if (empty($paymentFor) && !empty($pending['payment_for'])) {
+            $paymentFor = $pending['payment_for'];
+        }
+        if (empty($cancel_url) && !empty($pending['cancel_url'])) {
+            $cancel_url = $pending['cancel_url'];
+        }
+
+        if (empty($requestData) || empty($paymentFor)) {
             return redirect(!empty($cancel_url) ? $cancel_url : route('seller.plan.extend.index'));
         }
 
-        if (!empty($reference) && $request->filled('reference') && $request->input('reference') != $reference) {
+        if ($this->hasExplicitFailure($payload)) {
             $this->clearFreshpaySession();
-            return redirect($cancel_url);
+            if (!empty($reference)) {
+                Cache::forget($this->pendingKey($reference));
+                Cache::forget($this->processedKey($reference));
+            }
+
+            return redirect(!empty($cancel_url) ? $cancel_url : route('seller.plan.extend.index'));
         }
 
-        if ($this->hasExplicitFailure($request->all())) {
+        if (!empty($reference) && Cache::has($this->processedKey($reference))) {
             $this->clearFreshpaySession();
-            return redirect($cancel_url);
+
+            return redirect()->route('success.page');
         }
 
+        Session::flash('warning', 'Payment is pending confirmation.');
+        if ($paymentFor == "membership" && !empty($requestData['package_type'])) {
+            return redirect()->route('front.register.view', ['status' => $requestData['package_type'], 'id' => $requestData['package_id']])->withInput($requestData);
+        }
+
+        return redirect()->route('seller.plan.extend.checkout', ['package_id' => $requestData['package_id']])->withInput($requestData);
+    }
+
+    public function cancelPayment()
+    {
+        $requestData = Session::get('request');
         $paymentFor = Session::get('paymentFor');
+
+        session()->flash('warning', __('cancel_payment'));
+        $this->clearFreshpaySession();
+
+        if (empty($requestData) || empty($paymentFor)) {
+            return redirect()->route('seller.plan.extend.index');
+        }
+
+        if ($paymentFor == "membership") {
+            return redirect()->route('front.register.view', ['status' => $requestData['package_type'], 'id' => $requestData['package_id']])->withInput($requestData);
+        } else {
+            return redirect()->route('seller.plan.extend.checkout', ['package_id' => $requestData['package_id']])->withInput($requestData);
+        }
+    }
+
+    private function processMembershipPayment($requestData, $paymentFor, $reference, $callbackPayload = [])
+    {
+        $bs = Basic::first();
         $package = Package::find($requestData['package_id']);
         $transaction_id = SellerPermissionHelper::uniqidReal(8);
         $transaction_details = json_encode([
             'reference' => $reference,
-            'callback_payload' => $request->all()
+            'callback_payload' => $callbackPayload
         ]);
 
         if ($paymentFor == "membership") {
@@ -108,7 +218,6 @@ class FreshpayController extends Controller
             $checkout = new SellerCheckoutController();
 
             $seller = $checkout->store($requestData, $transaction_id, $transaction_details, $amount, $bs, $password);
-
             $lastMemb = $seller->memberships()->orderBy('id', 'DESC')->first();
 
             $activation = Carbon::parse($lastMemb->start_date);
@@ -133,11 +242,6 @@ class FreshpayController extends Controller
             ];
             $mailer->mailFromAdmin($data);
             @unlink(public_path('assets/front/invoices/' . $file_name));
-
-            session()->flash('success', 'Your payment has been completed.');
-            $this->clearFreshpaySession();
-
-            return redirect()->route('success.page');
         } elseif ($paymentFor == "extend") {
             $amount = $requestData['price'];
             $password = uniqid('qrcode');
@@ -167,7 +271,6 @@ class FreshpayController extends Controller
             $mailer->mailFromAdmin($data);
             @unlink(public_path('assets/front/invoices/' . $file_name));
 
-            //store data to transaction and earnings table
             $transaction_data = [];
             $transaction_data['order_id'] = $lastMemb->id;
             $transaction_data['transcation_type'] = 5;
@@ -188,32 +291,6 @@ class FreshpayController extends Controller
                 'total_profit' => $lastMemb->price,
             ];
             storeEarnings($data);
-
-            $this->clearFreshpaySession();
-
-            return redirect()->route('success.page');
-        }
-
-        $this->clearFreshpaySession();
-        return redirect($cancel_url);
-    }
-
-    public function cancelPayment()
-    {
-        $requestData = Session::get('request');
-        $paymentFor = Session::get('paymentFor');
-
-        session()->flash('warning', __('cancel_payment'));
-        $this->clearFreshpaySession();
-
-        if (empty($requestData) || empty($paymentFor)) {
-            return redirect()->route('seller.plan.extend.index');
-        }
-
-        if ($paymentFor == "membership") {
-            return redirect()->route('front.register.view', ['status' => $requestData['package_type'], 'id' => $requestData['package_id']])->withInput($requestData);
-        } else {
-            return redirect()->route('seller.plan.extend.checkout', ['package_id' => $requestData['package_id']])->withInput($requestData);
         }
     }
 
@@ -225,20 +302,57 @@ class FreshpayController extends Controller
         Session::forget('freshpay_reference');
     }
 
+    private function pendingKey($reference)
+    {
+        return 'freshpay:pending:' . $reference;
+    }
+
+    private function processedKey($reference)
+    {
+        return 'freshpay:processed:' . $reference;
+    }
+
+    private function extractReference($response)
+    {
+        if (!is_array($response)) {
+            return null;
+        }
+
+        $keys = ['reference', 'merchant_transaction_id', 'merchantTransactionId', 'transaction_id', 'trxref'];
+        foreach ($keys as $key) {
+            if (!empty($response[$key])) {
+                return $response[$key];
+            }
+        }
+
+        if (!empty($response['data']) && is_array($response['data'])) {
+            foreach ($keys as $key) {
+                if (!empty($response['data'][$key])) {
+                    return $response['data'][$key];
+                }
+            }
+        }
+
+        return null;
+    }
+
     private function hasExplicitFailure($response)
     {
         if (!is_array($response)) {
             return false;
         }
 
-        if (array_key_exists('success', $response) && $response['success'] === false) {
+        if (array_key_exists('success', $response) && ($response['success'] === false || $response['success'] === 'false' || $response['success'] === 0 || $response['success'] === '0')) {
             return true;
         }
 
-        if (array_key_exists('status', $response)) {
-            $status = strtolower((string) $response['status']);
-            if (in_array($status, ['failed', 'error', 'cancelled', 'canceled', 'declined'])) {
-                return true;
+        $keys = ['status', 'payment_status', 'transaction_status', 'state', 'result'];
+        foreach ($keys as $key) {
+            if (array_key_exists($key, $response)) {
+                $status = strtolower((string) $response[$key]);
+                if (in_array($status, ['failed', 'error', 'cancelled', 'canceled', 'declined'])) {
+                    return true;
+                }
             }
         }
 
@@ -246,7 +360,100 @@ class FreshpayController extends Controller
             return true;
         }
 
+        if (!empty($response['data']) && is_array($response['data'])) {
+            return $this->hasExplicitFailure($response['data']);
+        }
+
         return false;
+    }
+
+    private function isConfirmedSuccess($response)
+    {
+        if (!is_array($response)) {
+            return false;
+        }
+
+        if ($this->hasExplicitFailure($response)) {
+            return false;
+        }
+
+        $status = $this->extractTerminalStatus($response);
+        if (!empty($status)) {
+            if (in_array($status, ['pending', 'processing', 'initiated', 'in_progress', 'waiting'])) {
+                return false;
+            }
+
+            if (in_array($status, ['success', 'successful', 'completed', 'paid', 'approved', 'payment_success', 'ok'])) {
+                return true;
+            }
+        }
+
+        if ($this->hasPositiveSuccessFlag($response) && $this->hasSuccessMessage($response)) {
+            return true;
+        }
+
+        if (!empty($response['data']) && is_array($response['data'])) {
+            return $this->isConfirmedSuccess($response['data']);
+        }
+
+        return false;
+    }
+
+    private function extractTerminalStatus($response)
+    {
+        if (!is_array($response)) {
+            return null;
+        }
+
+        $keys = ['status', 'payment_status', 'transaction_status', 'state', 'result'];
+
+        foreach ($keys as $key) {
+            if (array_key_exists($key, $response) && $response[$key] !== null && $response[$key] !== '') {
+                return strtolower((string) $response[$key]);
+            }
+        }
+
+        return null;
+    }
+
+    private function hasPositiveSuccessFlag($response)
+    {
+        if (!is_array($response) || !array_key_exists('success', $response)) {
+            return false;
+        }
+
+        return $response['success'] === true || $response['success'] === 'true' || $response['success'] === 1 || $response['success'] === '1';
+    }
+
+    private function hasSuccessMessage($response)
+    {
+        if (!is_array($response) || empty($response['message'])) {
+            return false;
+        }
+
+        $message = strtolower((string) $response['message']);
+        $positiveTokens = ['success', 'successful', 'completed', 'paid', 'approved'];
+        $pendingTokens = ['pending', 'processing', 'initiated', 'sent', 'waiting', 'request'];
+
+        $hasPositiveToken = false;
+        foreach ($positiveTokens as $token) {
+            if (strpos($message, $token) !== false) {
+                $hasPositiveToken = true;
+                break;
+            }
+        }
+
+        if (!$hasPositiveToken) {
+            return false;
+        }
+
+        foreach ($pendingTokens as $token) {
+            if (strpos($message, $token) !== false) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function extractErrorMessage($response)
