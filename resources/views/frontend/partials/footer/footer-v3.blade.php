@@ -9,7 +9,8 @@
             <div class="logo mb-20">
               <a class="navbar-brand" href="{{ route('index') }}" target="_self" title="Link">
                 @if (!empty($basicInfo->footer_logo))
-                  <img class="lazyload" data-src="{{ asset('assets/img/' . $basicInfo->footer_logo) }}" alt="">
+                  <img class="lazyload" data-src="{{ asset('assets/img/' . $basicInfo->footer_logo) }}" alt=""
+                    style="width: auto; height: auto; max-width: 100%; max-height: clamp(40px, 6vw, 58px);">
                 @endif
               </a>
             </div>
