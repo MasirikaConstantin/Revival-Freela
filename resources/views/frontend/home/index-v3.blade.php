@@ -32,7 +32,7 @@
                 {{ $heroInfo->title }}
               </h1>
             @else
-              {{ __('Experience the Power of Premium Freelancers') }}
+                <h1>{{ __('Experience the Power of Premium Freelancers') }}</h1>
             @endif
             @if (!empty($heroInfo->text))
               <p class="text">{{ $heroInfo->text }}</p>
@@ -75,7 +75,8 @@
     </div>
     <div class="banner-img d-none d-lg-block" data-aos="fade-up">
       @if (!empty($heroImg))
-        <img class="lazyload blur-up" data-src="{{ asset('assets/img/' . $heroImg) }}" alt="">
+        <img class="lazyload blur-up" data-src="{{ asset('assets/img/' . $heroImg) }}"
+          alt="{{ __('Banner Image') }}">
       @endif
     </div>
   </section>
@@ -96,7 +97,7 @@
                         <div class="sponsor-img">
                           <a href="{{ $partner->url }}">
                             <img class="lazyload" data-src="{{ asset('assets/img/partners/' . $partner->image) }}"
-                              alt="">
+                              alt="{{ __('Sponsor') }}">
                           </a>
                         </div>
                       </div>
@@ -134,7 +135,7 @@
                     <div class="card_icon">
                       <!-- If use image as icon uncomment below line -->
                       <img class="lazyload" data-src="{{ asset('assets/img/service-categories/' . $category->image) }}"
-                        alt="image name here">
+                        alt="{{ $category->name }}">
                     </div>
                     <div class="card_details p-25">
                       <h4 class="card_title lc-2 mb-15">
@@ -239,10 +240,10 @@
                           <div class="service_default service_default_2 border radius-md mb-25">
                             <figure class="service_img">
                               <a href="{{ route('service_details', ['slug' => $serviceContent->slug, 'id' => $serviceContent->service_id]) }}"
-                                title="" target="_self" class="lazy-container ratio ratio-2-3">
+                                title="{{ $serviceContent->title }}" target="_self" class="lazy-container ratio ratio-2-3">
                                 <img class="lazyload" src="{{ asset('assets/front/images/placeholder.png') }}"
                                   data-src="{{ asset('assets/img/services/thumbnail-images/' . $service->thumbnail_image) }}"
-                                  alt="service">
+                                  alt="{{ $serviceContent->title }}">
                               </a>
                             </figure>
 
@@ -258,10 +259,10 @@
                                       @if (!is_null($seller->photo))
                                         <img class="lazyload"
                                           data-src="{{ asset('assets/admin/img/seller-photo/' . $seller->photo) }}"
-                                          alt="Image">
+                                          alt="{{ __('Image') }}">
                                       @else
                                         <img class="lazyload" data-src="{{ asset('assets/img/blank-user.jpg') }}"
-                                          alt="Image">
+                                          alt="{{ __('Image') }}">
                                       @endif
                                     </a>
                                     <div>
@@ -285,25 +286,26 @@
                                   @endphp
                                   <div class="author">
                                     <a href="{{ route('frontend.seller.details', ['username' => $admin->username, 'admin' => true]) }}"
-                                      target="_self" title="">
+                                      target="_self" title="{{ $admin->username }}">
                                       @if (!empty($admin->image))
                                         <img class="lazyload"
-                                          data-src="{{ asset('assets/img/admins/' . $admin->image) }}" alt="Image">
+                                          data-src="{{ asset('assets/img/admins/' . $admin->image) }}"
+                                          alt="{{ __('Image') }}">
                                       @else
                                         <img class="lazyload" data-src="{{ asset('assets/img/blank-user.jpg') }}"
-                                          alt="Image">
+                                          alt="{{ __('Image') }}">
                                       @endif
                                     </a>
                                     <div>
                                       <span class="h6 font-sm mb-0">
                                         <a href="{{ route('frontend.seller.details', ['username' => $admin->username, 'admin' => true]) }}"
-                                          target="_self" title="">
+                                          target="_self" title="{{ $admin->username }}">
                                           {{ $admin->username }}
                                         </a>
                                       </span>
                                       <span class="font-sm">
                                         <a href="{{ route('frontend.seller.details', ['username' => $admin->username, 'admin' => true]) }}"
-                                          target="_self" title="">
+                                          target="_self" title="{{ $admin->first_name . ' ' . $admin->last_name }}">
                                           {{ strlen($admin->first_name . ' ' . $admin->last_name) > 20 ? mb_substr($admin->first_name . ' ' . $admin->last_name, 0, 20, 'UTF-8') . '..' : $admin->first_name . ' ' . $admin->last_name }}
                                         </a>
                                       </span>
@@ -420,7 +422,8 @@
                       <div class="client-img">
                         <div class="lazy-container radius-sm ratio ratio-1-1">
                           <img class="lazyload" src="{{ asset('assets/front/images/placeholder.png') }}"
-                            data-src="{{ asset('assets/img/clients/' . $testimonial->image) }}" alt="Person Image">
+                            data-src="{{ asset('assets/img/clients/' . $testimonial->image) }}"
+                            alt="{{ $testimonial->name }}">
                         </div>
                       </div>
                       <div class="content">
@@ -465,7 +468,8 @@
                 <div class="card_img">
                   <a href="{{ route('blog.post_details', ['slug' => $post->slug, 'id' => $post->id]) }}" target="_self"
                     class="lazy-container ratio ratio-2-3">
-                    <img class="lazyload" data-src="{{ asset('assets/img/posts/' . $post->image) }}" alt="">
+                    <img class="lazyload" data-src="{{ asset('assets/img/posts/' . $post->image) }}"
+                      alt="{{ $post->title }}">
                   </a>
                 </div>
                 <ul class="card_list list-unstyled">
@@ -484,7 +488,7 @@
                 <div class="card_content text-center p-25">
                   <h4 class="card_title lc-2 mb-15">
                     <a href="{{ route('blog.post_details', ['slug' => $post->slug, 'id' => $post->id]) }}"
-                      target="_self" title="">
+                      target="_self" title="{{ $post->title }}">
                       {{ strlen($post->title) > 45 ? mb_substr($post->title, 0, 45, 'UTF-8') . '...' : $post->title }}
                     </a>
                   </h4>
@@ -527,14 +531,15 @@
                 </h2>
                 @if (!empty(@$ctaSectionInfo->button_text) || !empty(@$ctaSectionInfo->button_url))
                   <a href="{{ @$ctaSectionInfo->button_url }}" class="btn btn-lg btn-primary rounded-pill"
-                    title="" target="_self">{{ @$ctaSectionInfo->button_text }}</a>
+                    title="{{ @$ctaSectionInfo->button_text }}" target="_self">{{ @$ctaSectionInfo->button_text }}</a>
                 @endif
               </div>
             </div>
             <div class="col-lg-6 align-self-end">
               <div class="image mt-2 text-end d-none d-lg-block">
                 <img class="lazyload" src="{{ asset('assets/front/images/placeholder.png') }}"
-                  data-src="{{ asset('assets/img/' . @$ctaSectionInfo->image) }}" alt="Image">
+                  data-src="{{ asset('assets/img/' . @$ctaSectionInfo->image) }}"
+                  alt="{{ @$ctaSectionInfo->title ?: __('Image') }}">
               </div>
             </div>
           </div>
