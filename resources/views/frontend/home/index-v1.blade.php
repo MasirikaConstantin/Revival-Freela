@@ -75,9 +75,11 @@
         <div class="col-lg-6">
           <div class="banner-img img-right mb-40" data-aos="fade-up">
             @if (!empty($heroImg))
-              <img class="lazyload blur-up" data-src="{{ asset('assets/img/' . $heroImg) }}" alt="Banner Image">
+              <img class="lazyload blur-up" data-src="{{ asset('assets/img/' . $heroImg) }}"
+                alt="{{ __('Banner Image') }}">
             @else
-              <img class="lazyload blur-up" data-src="{{ asset('assets/img/hero-static.png') }}" alt="Banner Image">
+              <img class="lazyload blur-up" data-src="{{ asset('assets/img/hero-static.png') }}"
+                alt="{{ __('Banner Image') }}">
             @endif
           </div>
         </div>
@@ -101,7 +103,7 @@
                         <a href="{{ $partner->url }}" target="_blank">
                           <div class="sponsor-img">
                             <img class="lazyload" data-src="{{ asset('assets/img/partners/' . $partner->image) }}"
-                              alt="Sponsor">
+                              alt="{{ __('Sponsor') }}">
                           </div>
                         </a>
                       </div>
@@ -139,7 +141,8 @@
                 <div class="col-xxl-3 col-lg-4 col-sm-6 item">
                   <div class="card mb-25 p-25 radius-md">
                     <div class="card_icon radius-md mb-25">
-                      <img src="{{ asset('assets/img/service-categories/' . $category->image) }}" alt="">
+                      <img src="{{ asset('assets/img/service-categories/' . $category->image) }}"
+                        alt="{{ $category->name }}">
                       <!-- If use image as icon uncomment below line -->
                     </div>
                     <div class="card_details">
@@ -245,10 +248,11 @@
                           <div class="service_default p-15 radius-md mb-25">
                             <figure class="service_img">
                               <a href="{{ route('service_details', ['slug' => $serviceContent->slug, 'id' => $serviceContent->service_id]) }}"
-                                title="Image" target="_self" class="lazy-container ratio ratio-2-3">
+                                title="{{ $serviceContent->title }}" target="_self"
+                                class="lazy-container ratio ratio-2-3">
                                 <img class="lazyload" src="{{ asset('assets/front/images/placeholder.png') }}"
                                   data-src="{{ asset('assets/img/services/thumbnail-images/' . $service->thumbnail_image) }}"
-                                  alt="service">
+                                  alt="{{ $serviceContent->title }}">
                               </a>
                             </figure>
                             <div class="service_details mt-20">
@@ -263,10 +267,10 @@
                                       @if (!is_null($seller->photo))
                                         <img class="lazyload"
                                           data-src="{{ asset('assets/admin/img/seller-photo/' . $seller->photo) }}"
-                                          alt="Image">
+                                          alt="{{ __('Image') }}">
                                       @else
                                         <img class="lazyload" data-src="{{ asset('assets/img/blank-user.jpg') }}"
-                                          alt="Image">
+                                          alt="{{ __('Image') }}">
                                       @endif
                                     </a>
                                     <div>
@@ -290,13 +294,14 @@
                                   @endphp
                                   <div class="author">
                                     <a href="{{ route('frontend.seller.details', ['username' => $admin->username, 'admin' => true]) }}"
-                                      target="_self" title="James Hobert">
+                                      target="_self" title="{{ $admin->username }}">
                                       @if (!empty($admin->image))
                                         <img class="lazyload"
-                                          data-src="{{ asset('assets/img/admins/' . $admin->image) }}" alt="Image">
+                                          data-src="{{ asset('assets/img/admins/' . $admin->image) }}"
+                                          alt="{{ __('Image') }}">
                                       @else
                                         <img class="lazyload" data-src="{{ asset('assets/img/blank-user.jpg') }}"
-                                          alt="Image">
+                                          alt="{{ __('Image') }}">
                                       @endif
                                     </a>
                                     <div>
@@ -308,7 +313,8 @@
                                       </span>
                                       <span class="font-sm">
                                         <a href="{{ route('frontend.seller.details', ['username' => $admin->username, 'admin' => true]) }}"
-                                          target="_self" title="Graphic Designer">
+                                          target="_self"
+                                          title="{{ $admin->first_name . ' ' . $admin->last_name }}">
                                           {{ strlen($admin->first_name . ' ' . $admin->last_name) > 20 ? mb_substr($admin->first_name . ' ' . $admin->last_name, 0, 20, 'UTF-8') . '..' : $admin->first_name . ' ' . $admin->last_name }}
                                         </a>
                                       </span>
@@ -412,7 +418,7 @@
               <div class="lazy-container radius-md ratio ratio-5-3">
                 @if (!empty($testimonialBgImg))
                   <img class="lazyload blur-up" src="{{ asset('assets/front/images/placeholder.png') }}"
-                    data-src="{{ asset('assets/img/' . $testimonialBgImg) }}" alt="Image">
+                    data-src="{{ asset('assets/img/' . $testimonialBgImg) }}" alt="{{ __('Image') }}">
                 @endif
               </div>
             </div>
@@ -442,7 +448,7 @@
                                 <div class="lazy-container rounded-pill ratio ratio-1-1">
                                   <img class="lazyload" src="{{ asset('assets/front/images/placeholder.png') }}"
                                     data-src="{{ asset('assets/img/clients/' . $testimonial->image) }}"
-                                    alt="Person Image">
+                                    alt="{{ $testimonial->name }}">
                                 </div>
                               </div>
                               <div class="content">
@@ -488,7 +494,8 @@
                 <div class="card_img">
                   <a href="{{ route('blog.post_details', ['slug' => $post->slug, 'id' => $post->id]) }}" target="_self"
                     class="lazy-container ratio ratio-5-4">
-                    <img class="lazyload" data-src="{{ asset('assets/img/posts/' . $post->image) }}" alt="Blog Image">
+                    <img class="lazyload" data-src="{{ asset('assets/img/posts/' . $post->image) }}"
+                      alt="{{ $post->title }}">
                   </a>
                   <ul class="card_list list-unstyled">
                     <li class="icon-start">
@@ -555,7 +562,8 @@
             <div class="col-lg-6 align-self-end">
               <div class="image mt-2 text-end d-none d-lg-block">
                 <img class="lazyload" src="{{ asset('assets/front/images/placeholder.png') }}"
-                  data-src="{{ asset('assets/img/' . @$ctaSectionInfo->image) }}" alt="Image"
+                  data-src="{{ asset('assets/img/' . @$ctaSectionInfo->image) }}"
+                  alt="{{ @$ctaSectionInfo->title ?: __('Image') }}"
                   width="300" height="300" style="width: 300px; height: 300px; object-fit: cover;">
               </div>
             </div>
