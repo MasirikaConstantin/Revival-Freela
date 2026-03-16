@@ -13,7 +13,8 @@
       @if (!empty($websiteInfo->logo))
         <div class="logo">
           <a href="{{ route('index') }}" target="_self" title="">
-            <img class="lazyload" data-src="{{ asset('assets/img/' . $websiteInfo->logo) }}" alt="Brand Logo">
+            <img class="lazyload" data-src="{{ asset('assets/img/' . $websiteInfo->logo) }}" alt="Brand Logo"
+              style="width: auto; height: auto; max-width: 100%; max-height: clamp(40px, 6vw, 58px);">
           </a>
         </div>
       @endif
@@ -32,7 +33,8 @@
         <!-- Logo -->
         @if (!empty($websiteInfo->logo))
           <a class="navbar-brand" href="{{ route('index') }}" target="_self" title="">
-            <img class="lazyload" data-src="{{ asset('assets/img/' . $websiteInfo->logo) }}" alt="Brand Logo">
+            <img class="lazyload" data-src="{{ asset('assets/img/' . $websiteInfo->logo) }}" alt="Brand Logo"
+              style="width: auto; height: auto; max-width: 100%; max-height: clamp(40px, 6vw, 58px);">
           </a>
         @endif
         <!-- Navigation items -->
